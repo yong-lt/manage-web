@@ -46,7 +46,7 @@ const onAvatarBeforeUpload = (file: any) => {
 
     fileUpload(fd, "image").then(res => {
         new baTableApi(Users).info(userStore.id).then(info => {
-            console.log(info);
+            userStore.dataFill(info.data);
         });
     });
 };

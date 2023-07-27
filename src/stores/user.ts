@@ -20,7 +20,7 @@ export const useUserInfo = defineStore("userinfo", {
     },
     actions: {
         dataFill(state: UserInfo) {
-            this.$state = { ...this.$state, state };
+            this.$state = { ...this.$state, ...state };
         },
         login(UserAccount: UserAccount) {
             return new Promise(async (resolve, reject) => {
