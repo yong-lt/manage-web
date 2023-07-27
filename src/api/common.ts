@@ -1,7 +1,44 @@
 import http from "@/utils/http";
+import { upload } from "./controllerUrl";
+import { ElNotification, UploadRawFile } from "element-plus";
+import { checkFileType } from "@/utils/common";
 
 /**
- * 生成一个控制器的：增、删、改、查、排序的操作url
+ * 文件上传
+ */
+export function fileUpload(fd: FormData, fileSite: fileUploadSaveSite): ApiPromise {
+    let errorMsg = "";
+    const file = fd.get("file") as UploadRawFile;
+
+    if (!file.name || typeof file.size == "undefined") {
+        errorMsg = "未选择文件！";
+        // jpg,png,bmp,jpeg,gif,webp,zip,rar,xls,xlsx,doc,docx,wav,mp4,mp3,txt
+    } else if (!checkFileType(file.name, file.type)) {
+        errorMsg = "不能上传该文件类型";
+    }
+
+    if (errorMsg) {
+        return new Promise((resolve, reject) => {
+            ElNotification({
+                type: "error",
+                message: errorMsg,
+            });
+            reject(errorMsg);
+        });
+    }
+
+    return http({
+        url: upload,
+        method: "POST",
+        data: fd,
+        headers: {
+            "x-file-site": fileSite,
+        },
+    });
+}
+
+/**
+ * 生成一个控制器的：增、删、改、查 的操作url
  */
 export class baTableApi {
     private controllerUrl;

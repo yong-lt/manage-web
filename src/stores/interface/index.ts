@@ -28,7 +28,8 @@ export interface Layout {
     menuWidth: number;
     menuColor: string[];
     menuActiveBackground: string[];
-    menuActiveColor: string[];
+    menuBackgroundColor: string[];
+    menuCollapseColor: string[];
     headerBarTabColor: string[];
     headerBarBackground: string[];
     headerBarHoverBackground: string[];

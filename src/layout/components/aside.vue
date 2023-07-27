@@ -7,7 +7,7 @@
                 v-if="configStore.layout.layoutMode === 'Default'"
                 :name="configStore.layout.menuCollapse ? 'Expand' : 'Fold'"
                 :class="configStore.layout.menuCollapse ? 'unfold' : ''"
-                :color="configStore.getColorVal('menuActiveColor')"
+                :color="configStore.getColorVal('menuCollapseColor')"
                 size="18"
                 class="fold"
             />
@@ -31,7 +31,7 @@ const menuWidth = computed(() => configStore.getMenuWidth());
 
 <style scoped lang="scss">
 .layout-aside {
-    background: var(--ylt-bg-color-overlay);
+    background: v-bind("configStore.getColorVal('menuBackgroundColor')");
     margin: 16px 0 16px 16px;
     height: calc(100vh - 32px);
     box-shadow: var(--el-box-shadow-light);

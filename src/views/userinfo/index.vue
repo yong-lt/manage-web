@@ -3,19 +3,23 @@
         <el-row :gutter="30">
             <el-col :xs="24" :sm="24" :md="24" :lg="10">
                 <div class="user-info">
-                    <div v-if="showModifyBox" class="box-1">
-                        <div class="avatar-choose-btn">
-                            <div class="content">
-                                <el-icon><Icon color="#99a2aa" name="Picture" /></el-icon>
-                                <span>选择文件</span>
-                            </div>
-                            <input type="file" name="" id="" ref="FileRef" />
-                        </div>
-                        <img :src="avatarSrc" alt="" />
-                    </div>
-
-                    <div v-else class="box-2">
-                        <img :src="userStore.getUserInfo.avatar_url" alt="" @click="onClickAvatar" />
+                    <div v-show="!showModifyBox" class="base-info">
+                        <el-upload
+                            class="avatar-uploader"
+                            action=""
+                            :show-file-list="false"
+                            :auto-upload="false"
+                            @change="onAvatarBeforeUpload"
+                            accept="image/gif, image/jpg, image/jpeg, image/bmp, image/png, image/webp"
+                        >
+                            <el-image :src="userStore.getUserInfo.avatar_url" class="avatar">
+                                <template #error>
+                                    <div class="image-slot">
+                                        <Icon size="30" color="#c0c4cc" name="el-icon-Picture" />
+                                    </div>
+                                </template>
+                            </el-image>
+                        </el-upload>
                         <div class="nickname">{{ userStore.getUserInfo.nickname }}</div>
                         <div class="create-time">最后登录：{{ userStore.getUserInfo.last_login_time }}</div>
                     </div>
@@ -26,34 +30,26 @@
 </template>
 
 <script lang="ts" setup>
-import { UploadRawFile } from "element-plus";
-import { onMounted, ref } from "vue";
+import { ref } from "vue";
+import { fileUpload } from "@/api/common";
 import { useUserInfo } from "@/stores/user";
+import { baTableApi } from "@/api/common";
+import { Users } from "@/api/controllerUrl";
 
-const FileRef = ref<HTMLInputElement>();
-const avatarSrc = ref("");
 const showModifyBox = ref(false);
 
 const userStore = useUserInfo();
 
-onMounted(() => {
-    if (FileRef.value) {
-        FileRef.value.onchange = e => {
-            if (e.target) {
-                const file = (e.target as HTMLInputElement).files![0];
-                const reader = new FileReader();
-                reader.onload = () => {
-                    console.log(reader.result);
+const onAvatarBeforeUpload = (file: any) => {
+    let fd = new FormData();
+    fd.append("file", file.raw);
 
-                    avatarSrc.value = reader.result as string;
-                };
-                reader.readAsDataURL(file);
-            }
-        };
-    }
-});
-
-const onClickAvatar = () => (showModifyBox.value = true);
+    fileUpload(fd, "image").then(res => {
+        new baTableApi(Users).info(userStore.id).then(info => {
+            console.log(info);
+        });
+    });
+};
 </script>
 
 <style scoped lang="scss">
@@ -69,8 +65,7 @@ const onClickAvatar = () => (showModifyBox.value = true);
         border-radius: 50px 50px;
     }
 
-    .box-1,
-    .box-2 {
+    .base-info {
         display: flex;
         justify-content: center;
         align-items: center;
@@ -78,38 +73,7 @@ const onClickAvatar = () => (showModifyBox.value = true);
         height: 200px;
     }
 
-    .box-1 {
-        .avatar-choose-btn {
-            width: 120px;
-            height: 50px;
-            position: relative;
-            background-color: #f1f2f5;
-            border: 1px solid #e5e9ef;
-            line-height: 50px;
-            border-radius: 5px;
-            color: #5a6267;
-            margin-right: 50px;
-
-            .content {
-                display: flex;
-                justify-content: space-evenly;
-                align-items: center;
-            }
-
-            input {
-                display: block;
-                width: 100%;
-                height: 100%;
-                position: absolute;
-                opacity: 0;
-                left: 0;
-                top: 0;
-                z-index: 999;
-            }
-        }
-    }
-
-    .box-2 {
+    .base-info {
         display: flex;
         flex-direction: column;
         justify-content: space-evenly;
@@ -124,7 +88,10 @@ const onClickAvatar = () => (showModifyBox.value = true);
             color: var(--el-text-color-regular);
         }
 
-        img {
+        .avatar {
+            width: 110px;
+            height: 110px;
+            border-radius: 50%;
             border: 3px dashed var(--el-color-primary-light-7);
             cursor: pointer;
 

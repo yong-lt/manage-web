@@ -18,5 +18,7 @@ interface ApiResponse<T = any> {
     data: T;
     msg: string;
 }
+// 文件上传保存位置
+type fileUploadSaveSite = "image" | "xlsx" | "doc" | "audio" | "video";
 
 type ApiPromise<T = any> = Promise<ApiResponse<T>>;

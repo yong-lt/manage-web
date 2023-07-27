@@ -21,8 +21,10 @@ export const useConfig = defineStore(
             menuColor: ["#303133", "#CFD3DC"],
             // 侧边菜单激活项背景色
             menuActiveBackground: ["#ffffff", "#1d1e1f"],
-            // 侧边菜单激活项文字色
-            menuActiveColor: ["#409eff", "#3375b9"],
+            // 侧边菜单激背景色
+            menuBackgroundColor: ["#ffffff", "#1d1e1f"],
+            // 侧边菜单收缩Icon
+            menuCollapseColor: ["#409eff", "#3375b9"],
             // 顶栏菜单栏 文字色
             headerBarTabColor: ["#000000", "#CFD3DC"],
             // 顶栏菜单栏 背景色
@@ -51,6 +53,7 @@ export const useConfig = defineStore(
             layout.layoutMode = mode;
         };
 
+        // 收展菜单返回宽度
         const getMenuWidth = () => {
             return layout.menuCollapse ? "64px" : layout.menuWidth + "px";
         };

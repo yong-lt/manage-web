@@ -19,6 +19,9 @@ export const useUserInfo = defineStore("userinfo", {
         getUserInfo: state => state,
     },
     actions: {
+        dataFill(state: UserInfo) {
+            this.$state = { ...this.$state, state };
+        },
         login(UserAccount: UserAccount) {
             return new Promise(async (resolve, reject) => {
                 try {
