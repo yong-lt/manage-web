@@ -1,0 +1,16 @@
+@use 'sass:map';
+@use 'mixins' as *;
+
+$bg-color: (
+    '': #f5f5f5,
+    'overlay': #ffffff,
+);
+
+$border-color: (
+    '': #f6f6f6
+);
+
+:root {
+    @include set-component-css-var('bg-color', $bg-color);
+    @include set-component-css-var('border-color', $border-color);
+}

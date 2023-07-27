@@ -1,0 +1,22 @@
+@function joinVarName($list) {
+    $name: '--ylt';
+    @each $item in $list {
+        @if $item != '' {
+            $name: $name + '-' + $item;
+        }
+    }
+    @return $name;
+}
+
+@function getCssVarName($args...) {
+    @return joinVarName($args);
+}
+
+/*
+ * 通过映射设置所有的CSS变量
+ */
+@mixin set-component-css-var($name, $variables) {
+    @each $attribute, $value in $variables {
+        #{getCssVarName($name, $attribute)}: #{$value};
+    }
+}
