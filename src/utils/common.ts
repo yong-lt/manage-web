@@ -1,6 +1,12 @@
-import type { App } from "vue";
+import type { App, CSSProperties } from "vue";
 import * as elIcons from "@element-plus/icons-vue";
 import Icon from "@/components/icon/index.vue";
+import { ElForm } from "element-plus";
+import { useConfig } from "@/stores/config";
+import { useUserInfo } from "@/stores/user";
+import { Local } from "./storage";
+import { USER_INFO } from "@/stores/constant/cacheKey";
+import router from "@/router";
 
 export function registerIcons(app: App) {
     /*
@@ -42,4 +48,55 @@ export function checkFileType(fileName: string, fileType: string) {
         }
     }
     return false;
+}
+
+/**
+ * 表单重置
+ * @param formEl
+ */
+export const onResetForm = (formEl: InstanceType<typeof ElForm> | undefined) => {
+    if (!formEl) return;
+    formEl.resetFields && formEl.resetFields();
+};
+
+/**
+ * main高度
+ * @returns CSSProperties
+ */
+export function mainHeight(): CSSProperties {
+    let height = 0;
+
+    const adminLayoutMainExtraHeight: anyObj = {
+        Default: 50,
+        Streamline: 60,
+    };
+
+    const config = useConfig();
+
+    height += adminLayoutMainExtraHeight[config.layout.layoutMode];
+
+    return {
+        height: "calc(100vh - " + height.toString() + "px)",
+    };
+}
+
+export function onLogout() {
+    const userInfo = useUserInfo();
+
+    if (userInfo.remember) {
+        const saveFilds = ["username", "avatar_url", "remember"];
+        const obj = Local.get(USER_INFO);
+
+        for (const key in obj) {
+            if (!saveFilds.includes(key)) {
+                obj[key] = "";
+            }
+        }
+        userInfo.dataFill(obj);
+    } else {
+        Local.remove(USER_INFO);
+        userInfo.$reset();
+    }
+
+    router.replace("/login");
 }

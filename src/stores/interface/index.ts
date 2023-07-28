@@ -3,6 +3,7 @@ import { RouteRecordRaw } from "vue-router";
 export interface UserAccount {
     username: string;
     password: string;
+    remember: boolean;
 }
 
 export type Router = RouteRecordRaw[];

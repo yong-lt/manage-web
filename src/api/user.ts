@@ -1,19 +1,17 @@
 import http from "@/utils/http";
-
-const controllerUrl = "/api/users";
+import { Users } from "./controllerUrl";
+import { baTableApi } from "./common";
 
 export function loginApi<T>(data: object): ApiPromise<T> {
     return http({
-        url: controllerUrl + "/login",
+        url: Users + "login",
         data,
         method: "POST",
     });
 }
 
-export function userListApi<T>(data: object = {}): ApiPromise<T> {
-    return http({
-        url: controllerUrl + "/list",
-        data,
-        method: "POST",
-    });
-}
+// 获取用户信息
+export const getUserInfo = (): ApiPromise<UserInfo> => new baTableApi(Users).info();
+
+// 用户信息修改
+export const modifyUserInfo = (data: { nickname: string; password: string }) => new baTableApi(Users).modify(data);

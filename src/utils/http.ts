@@ -2,9 +2,9 @@ import axios from "axios";
 import { Local } from "./storage";
 import { USER_INFO } from "@/stores/constant/cacheKey";
 import { ElNotification } from "element-plus";
-
 import { useUserInfo } from "../stores/user";
 import { storeToRefs } from "pinia";
+import router from "@/router";
 
 const service = axios.create({
     baseURL: "http://localhost:3001",
@@ -29,7 +29,7 @@ service.interceptors.response.use(
         const res = response.data;
 
         if (res.code !== 200) {
-            ElNotification.error(res.msg || "Error");
+            ElNotification.error({ title: "请求错误", message: res.msg || "Error" });
 
             if (res.code === 401) {
                 const user = useUserInfo();
@@ -42,10 +42,11 @@ service.interceptors.response.use(
         }
     },
     error => {
-        ElNotification.error(error.message || "Error");
+        ElNotification.error({ title: "服务器错误", message: error.message || "Error" });
         const user = useUserInfo();
         user.$reset();
         Local.remove(USER_INFO);
+        router.replace("/login");
         return Promise.reject(error);
     }
 );

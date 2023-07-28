@@ -8,9 +8,10 @@
                 <img src="~assets/login-header.png" alt="" />
             </div>
             <div class="form">
-                <img class="profile-avatar" src="~assets/avatar.png" alt="" />
+                <img v-if="!userInfo.avatar_url" class="profile-avatar" src="~assets/avatar.png" alt="" />
+                <img v-else class="profile-avatar" :src="userInfo.avatar_url" alt="" />
                 <div class="content">
-                    <el-form ref="formRef" :model="form" status-icon :rules="rules">
+                    <el-form ref="formRef" :model="form" status-icon :rules="rules" @keyup.enter="onSubmit(formRef)">
                         <el-form-item prop="username">
                             <el-input ref="usernameRef" v-model="form.username" placeholder="用户名" clearable type="text">
                                 <template #prefix>
@@ -25,6 +26,7 @@
                                 </template>
                             </el-input>
                         </el-form-item>
+                        <el-checkbox v-model="form.remember" label="记住用户名" size="default"></el-checkbox>
                         <el-form-item>
                             <el-button
                                 :loading="form.loading"
@@ -50,6 +52,8 @@ import { useUserInfo } from "@/stores/user";
 import { useRouter } from "vue-router";
 import { buildValidatorData } from "@/utils/validate";
 import * as pageBubble from "@/utils/pageBubble";
+import { updateHtmlDarkClass } from "@/utils/useDark";
+import { useConfig } from "@/stores/config";
 
 var timer: NodeJS.Timer;
 
@@ -58,10 +62,12 @@ const usernameRef = ref<InstanceType<typeof ElInput>>();
 const passwordRef = ref<InstanceType<typeof ElInput>>();
 
 const form = reactive({
-    username: "admin",
-    password: "admin",
+    username: "",
+    password: "",
     loading: false,
+    remember: false,
 });
+
 // 表单验证规则
 const rules = reactive<FormRules>({
     username: [buildValidatorData({ name: "required", message: "请输入账号" }), buildValidatorData({ name: "account" })],
@@ -69,18 +75,28 @@ const rules = reactive<FormRules>({
 });
 
 const router = useRouter();
-const userinfo = useUserInfo();
+const userInfo = useUserInfo();
+const configStore = useConfig();
 
 onMounted(() => {
     timer = setTimeout(() => {
         pageBubble.init();
     }, 1000);
+
+    initForm();
+    // 读取配置，是否启动暗黑主题
+    updateHtmlDarkClass(configStore.getIsDark());
 });
 
 onBeforeUnmount(() => {
     clearTimeout(timer);
     pageBubble.removeListeners();
 });
+
+const initForm = () => {
+    form.username = userInfo.username;
+    form.remember = userInfo.remember as boolean;
+};
 
 const focusInput = () => {
     if (form.username === "") {
@@ -97,8 +113,8 @@ const onSubmit = (formEl: FormInstance | undefined) => {
         if (valid) {
             form.loading = true;
             try {
-                const { username, password } = form;
-                await userinfo.login({ username, password });
+                const { username, password, remember } = form;
+                await userInfo.login({ username, password, remember });
                 router.push("/dashboard");
             } catch (error) {
                 form.loading = false;

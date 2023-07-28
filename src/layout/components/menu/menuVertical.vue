@@ -1,34 +1,43 @@
 <template>
     <el-scrollbar ref="horizontalMenusRef" class="menus-scrollbar">
-        <el-menu class="el-menu-vertical-demo" :default-active="active" :collapse="configStore.layout.menuCollapse">
-            <menu-tree :menus="menus.list" />
+        <el-menu class="el-menu-vertical-demo" :default-active="state.defaultActive" :collapse="configStore.layout.menuCollapse">
+            <menu-tree :menus="state.list" />
         </el-menu>
     </el-scrollbar>
 </template>
 
 <script lang="ts" setup>
 import { usePermission } from "@/stores/permission";
-import { onMounted, reactive, ref } from "vue";
-import { RouteRecordRaw, useRoute } from "vue-router";
+import { onMounted, reactive } from "vue";
+import { RouteLocationNormalizedLoaded, RouteRecordRaw, onBeforeRouteUpdate, useRoute } from "vue-router";
 import MenuTree from "./menuTree.vue";
 import { useConfig } from "@/stores/config";
 
 const permission = usePermission();
 const configStore = useConfig();
 
-const menus = reactive<{
+const state = reactive<{
     list: RouteRecordRaw[];
+    defaultActive: string;
 }>({
     list: [],
+    defaultActive: "",
 });
-
-const active = ref("");
 
 const route = useRoute();
 
+// 激活当前路由的菜单
+const currentRouteActive = (currentRoute: RouteLocationNormalizedLoaded) => {
+    state.defaultActive = currentRoute.path;
+};
+
 onMounted(() => {
-    menus.list = permission.getRouter;
-    active.value = route.path;
+    state.list = permission.getRouter;
+    currentRouteActive(route);
+});
+
+onBeforeRouteUpdate(to => {
+    currentRouteActive(to);
 });
 </script>
 

@@ -8,3 +8,7 @@ html,body,#app{
     height: 100%;
     background-color: var(--ylt-bg-color);
 }
+
+.container {
+    margin: var(--ylt-main-space) var(--ylt-main-space) 60px;
+}

@@ -3,9 +3,7 @@
         <el-container>
             <el-container class="content-wrapper">
                 <Header />
-                <el-main>
-                    <router-view />
-                </el-main>
+                <Main />
             </el-container>
         </el-container>
     </div>
@@ -13,6 +11,7 @@
 
 <script setup lang="ts">
 import Header from "@/layout/components/header.vue";
+import Main from "@/layout/main/index.vue";
 </script>
 
 <style scoped lang="scss">

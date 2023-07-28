@@ -19,7 +19,7 @@ export default {
 
 <style scoped lang="scss">
 .layout-header {
-    height: 70px;
+    height: auto;
     padding: 0;
 }
 </style>

@@ -48,6 +48,11 @@ export const useConfig = defineStore(
             }
         };
 
+        // 获取当前是否暗黑主题
+        const getIsDark = function () {
+            return layout.isDark;
+        };
+
         // 设置布局方式
         const setLayoutMode = (mode: string) => {
             layout.layoutMode = mode;
@@ -64,6 +69,7 @@ export const useConfig = defineStore(
             getColorVal,
             setLayoutMode,
             getMenuWidth,
+            getIsDark,
         };
     },
     {

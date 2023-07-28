@@ -7,6 +7,7 @@ interface UserInfo {
     update_time: string;
     last_login_time: string;
     nickname: string;
+    remember: Boolean;
 }
 
 interface anyObj {

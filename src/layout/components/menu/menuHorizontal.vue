@@ -29,7 +29,7 @@
 import { useConfig } from "@/stores/config";
 import { usePermission } from "@/stores/permission";
 import { onMounted, reactive } from "vue";
-import { RouteLocationNormalizedLoaded, RouteRecordRaw, useRoute, useRouter } from "vue-router";
+import { RouteLocationNormalizedLoaded, RouteRecordRaw, onBeforeRouteUpdate, useRoute, useRouter } from "vue-router";
 import NavMenus from "../navMenus.vue";
 import MenuTree from "./menuTree.vue";
 
@@ -58,6 +58,10 @@ const onClickMenu = (menu: RouteRecordRaw) => {
 onMounted(() => {
     state.menus = permissionStore.getRouter;
     currentRouteActive(route);
+});
+
+onBeforeRouteUpdate(to => {
+    currentRouteActive(to);
 });
 </script>
 

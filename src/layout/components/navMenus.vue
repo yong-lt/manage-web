@@ -58,6 +58,7 @@ import screenfull from "screenfull";
 import { USER_INFO } from "@/stores/constant/cacheKey";
 import { useRouter } from "vue-router";
 import { onMounted } from "vue";
+import { onLogout } from "@/utils/common";
 
 const configStore = useConfig();
 const userStore = useUserInfo();
@@ -75,10 +76,10 @@ const onGithub = () => {
     window.open("https://github.com/");
 };
 
-const onLogout = () => {
-    Local.remove(USER_INFO);
-    router.replace("/login");
-};
+// const onLogout = () => {
+//     Local.remove(USER_INFO);
+//     router.replace("/login");
+// };
 </script>
 
 <style scoped lang="scss">

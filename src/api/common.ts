@@ -32,7 +32,7 @@ export function fileUpload(fd: FormData, fileSite: fileUploadSaveSite): ApiPromi
         method: "POST",
         data: fd,
         headers: {
-            "x-file-site": fileSite,
+            "x-file-site": fileSite, // 保存在服务端的位置
         },
     });
 }
@@ -73,7 +73,7 @@ export class baTableApi {
     }
 
     // 通过 id 查询
-    info(id: number): ApiPromise {
+    info(id?: number): ApiPromise {
         return http({
             url: this.actionUrl.get("info"),
             method: "GET",
