@@ -28,15 +28,7 @@
                         </el-form-item>
                         <el-checkbox v-model="form.remember" label="记住用户名" size="default"></el-checkbox>
                         <el-form-item>
-                            <el-button
-                                :loading="form.loading"
-                                class="submit-button"
-                                round
-                                type="primary"
-                                size="large"
-                                @click="onSubmit(formRef)"
-                                >登 录</el-button
-                            >
+                            <el-button :loading="form.loading" class="submit-button" round type="primary" size="large" @click="onSubmit(formRef)">登 录</el-button>
                         </el-form-item>
                     </el-form>
                 </div>
@@ -115,7 +107,7 @@ const onSubmit = (formEl: FormInstance | undefined) => {
             try {
                 const { username, password, remember } = form;
                 await userInfo.login({ username, password, remember });
-                router.push("/dashboard");
+                router.push("/dashboard/index");
             } catch (error) {
                 form.loading = false;
             }

@@ -4,7 +4,7 @@ import { USER_INFO } from "@/stores/constant/cacheKey";
 import { ElNotification } from "element-plus";
 import { useUserInfo } from "../stores/user";
 import { storeToRefs } from "pinia";
-import router from "@/router";
+import { onLogout } from "./common";
 
 const service = axios.create({
     baseURL: "http://localhost:3001",
@@ -32,8 +32,7 @@ service.interceptors.response.use(
             ElNotification.error({ title: "请求错误", message: res.msg || "Error" });
 
             if (res.code === 401) {
-                const user = useUserInfo();
-                user.$reset();
+                onLogout();
             }
 
             return Promise.reject(new Error(res.msg || "Error"));
@@ -43,10 +42,7 @@ service.interceptors.response.use(
     },
     error => {
         ElNotification.error({ title: "服务器错误", message: error.message || "Error" });
-        const user = useUserInfo();
-        user.$reset();
-        Local.remove(USER_INFO);
-        router.replace("/login");
+        onLogout();
         return Promise.reject(error);
     }
 );

@@ -80,6 +80,9 @@ export function mainHeight(): CSSProperties {
     };
 }
 
+/**
+ * 注销
+ */
 export function onLogout() {
     const userInfo = useUserInfo();
 

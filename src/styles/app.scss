@@ -12,3 +12,21 @@ html,body,#app{
 .container {
     margin: var(--ylt-main-space) var(--ylt-main-space) 60px;
 }
+
+.table-header {
+    .table-header-operate .icon {
+        color: var(--el-color-white) !important;
+    }
+}
+
+
+// iocn
+.ba-icon-dark {
+    color: var(--el-text-color-primary) !important;
+}
+
+.ba-operate-dialog {
+    min-width: 400px;
+    overflow: hidden;
+    border-radius: var(--el-border-radius-base);
+}

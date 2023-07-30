@@ -27,13 +27,14 @@ export default class baTable {
 
     public before: BaTableBefore;
 
-    constructor(api: baTableApi, table: BaTable, before: BaTableBefore = {}) {
+    constructor(api: baTableApi, table: BaTable, form: BaTableForm, before: BaTableBefore = {}) {
         this.api = api;
         this.table = Object.assign(this.table, table);
-        this.form = Object.assign(this.form, {});
+        this.form = Object.assign(this.form, form);
         this.before = before;
     }
 
+    // 检查是否有组件私有方法
     runBefore(funName: string, args: any = {}) {
         if (this.before && this.before[funName] && typeof this.before[funName] === "function") {
             return this.before[funName]!({ ...args }) === false ? false : true;
@@ -43,10 +44,10 @@ export default class baTable {
     }
 
     // 获取列表数据
-    getList() {
+    getList(data?: anyObj) {
         this.table.loading = true;
         this.api
-            .list()
+            .list(data)
             .then(res => (this.table.data = res.data))
             .finally(() => (this.table.loading = false));
     }
@@ -89,7 +90,8 @@ export default class baTable {
                 "refresh",
                 () => {
                     this.table.data = [];
-                    this.getList();
+                    // 菜单，暂时这样传参数
+                    this.getList({ isSystem: 1 });
                 },
             ],
             [
@@ -128,7 +130,6 @@ export default class baTable {
     /**
      * 打开表单
      * @param operate 操作:add=添加,edit=编辑
-     * @param operateIds 被操作项的数组:add=[],edit=[1,2,...]
      */
     toggleForm = (operate = "", btn: OptButton | anyObj = {}, id: number = 0) => {
         if (this.form.ref) {
@@ -160,20 +161,36 @@ export default class baTable {
 
     // 删除
     postDel = (ids: string[]) => {
-        this.api.delete(ids).then(res => this.getList());
+        this.api.delete(ids).then(() => this.getList());
     };
 
     onSubmit(form: InstanceType<typeof ElForm> | undefined = undefined) {
         if (this.runBefore("onSubmit", { form, items: this.form.items }) === false) return;
 
+        const submitCallback = () => {
+            if (!this.form.items?.id) {
+                this.api.add(this.form.items).then(() => {
+                    this.onTableHeaderAction("refresh", {});
+                    this.toggleForm();
+                });
+            } else {
+                this.api.modify(this.form.items).then(() => {
+                    this.onTableHeaderAction("refresh", {});
+                    this.toggleForm();
+                });
+            }
+        };
+
         if (form) {
             this.form.ref = form;
+            form.validate(valid => {
+                if (valid) {
+                    submitCallback();
+                }
+            });
+        } else {
+            submitCallback();
         }
-
-        this.api.modify(this.form.items).then(res => {
-            this.toggleForm();
-            this.getList();
-        });
     }
     /**
      * 获取表格选择项的id数组
@@ -186,7 +203,7 @@ export default class baTable {
         return ids;
     }
     // 表单初始化请求数据
-    mount() {
-        this.getList();
+    mount(data?: anyObj) {
+        this.getList(data);
     }
 }

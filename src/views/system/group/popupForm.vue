@@ -1,26 +1,19 @@
 <template>
-    <el-dialog :close-on-click-modal="false" :model-value="baTable.form.operate ? true : false" width="400px" @close="baTable.toggleForm">
+    <el-dialog class="ba-operate-dialog" :close-on-click-modal="false" :model-value="baTable.form.operate ? true : false" width="400px" @close="baTable.toggleForm">
         <template #header>
             <div class="my-header">{{ baTable.form.title }}</div>
         </template>
         <el-form ref="formRef" :model="baTable.form.items" label-width="120px" v-loading="baTable.form.loading">
             <el-form-item label="上级">
-                <el-input v-model="baTable.form.items!.parent_id" />
+                <el-select v-model="baTable.form.items!.parent_id" style="width: 100%" @visible-change="onGroupSelect" placeholder="无上级则不选">
+                    <el-option v-for="item in state.groupList" :key="item.id" :label="item.name" :value="item.id" />
+                </el-select>
             </el-form-item>
             <el-form-item label="角色名称">
                 <el-input v-model="baTable.form.items!.name" />
             </el-form-item>
             <el-form-item label="权限">
-                <el-tree
-                    ref="treeRef"
-                    :key="state.treeKey"
-                    :data="state.menuRules"
-                    show-checkbox
-                    node-key="id"
-                    :default-checked-keys="state.defaultKeys"
-                    default-expand-all
-                    :props="defaultProps"
-                />
+                <el-tree ref="treeRef" :key="state.treeKey" :data="state.menuRules" show-checkbox node-key="id" :default-checked-keys="state.defaultKeys" default-expand-all :props="defaultProps" />
             </el-form-item>
         </el-form>
         <template #footer>
@@ -37,8 +30,8 @@ import { inject, onMounted, reactive, ref, watch } from "vue";
 
 import baTableClass from "@/utils/baTable";
 import { ElForm, ElTree } from "element-plus";
-import { usePermission } from "@/stores/permission";
 import { Router } from "@/stores/interface";
+import { getListApi } from "@/api/menu";
 
 const defaultProps = {
     children: "children",
@@ -54,16 +47,18 @@ const state = reactive<{
     menuRules: Router;
     defaultKeys: number[];
     treeKey: number;
+    groupList: any[];
 }>({
     menuRules: [],
     defaultKeys: [],
     treeKey: 0,
+    groupList: [],
 });
 
-const permission = usePermission();
-
 onMounted(() => {
-    state.menuRules = permission.getRouter;
+    getListApi({ isSystem: 1 }).then(res => {
+        state.menuRules = res.data;
+    });
 });
 
 watch(
@@ -76,6 +71,12 @@ watch(
         deep: true,
     }
 );
+
+const onGroupSelect = (val: boolean) => {
+    if (val) {
+        baTable.api.list({ isAll: 1 }).then(res => (state.groupList = res.data));
+    }
+};
 const getCheckeds = () => {
     return treeRef.value!.getCheckedKeys().concat(treeRef.value!.getHalfCheckedKeys());
 };

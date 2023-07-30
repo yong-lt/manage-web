@@ -22,15 +22,14 @@ const baTable = new baTableClass(
     {
         column: [
             { type: "selection", align: "center" },
-            {
-                label: "ID",
-                prop: "id",
-                width: "100",
-                align: "left",
-            },
             { label: "角色名称", prop: "name", width: "", align: "left" },
             { label: "操作", width: "130", align: "center", render: "buttons", buttons: defaultOptButtons() },
         ],
+    },
+    {
+        defaultItem: {
+            parent_id: 0,
+        },
     },
     {
         onSubmit({ form, items }) {

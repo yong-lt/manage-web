@@ -28,20 +28,7 @@ declare global {
     }
 
     interface TableColumn extends ElTableColumn {
-        // 渲染为:icon|switch|image|images|tag|url|datetime|buttons|customTemplate|customRender
-        render?:
-            | "icon"
-            | "switch"
-            | "image"
-            | "images"
-            | "tag"
-            | "tags"
-            | "url"
-            | "datetime"
-            | "color"
-            | "buttons"
-            | "customTemplate"
-            | "customRender";
+        render?: "icon" | "image" | "tag" | "buttons";
         buttons?: OptButton[];
         custom?: anyObj;
     }

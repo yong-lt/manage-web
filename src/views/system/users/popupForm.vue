@@ -1,14 +1,20 @@
 <template>
-    <el-dialog :close-on-click-modal="false" :model-value="baTable.form.operate ? true : false" width="400px" @close="baTable.toggleForm">
+    <el-dialog class="ba-operate-dialog" :close-on-click-modal="false" :model-value="baTable.form.operate ? true : false" @close="baTable.toggleForm">
         <template #header>
             <div class="my-header">{{ baTable.form.title }}</div>
         </template>
-        <el-form ref="formRef" :model="baTable.form.items" label-width="120px" v-loading="baTable.form.loading">
-            <el-form-item label="用户账号">
+        <el-form ref="formRef" :rules="rules" :model="baTable.form.items" label-width="120px" v-loading="baTable.form.loading">
+            <el-form-item label="用户账号" prop="username">
                 <el-input v-model="baTable.form.items!.username" />
             </el-form-item>
-            <el-form-item label="用户权限">
-                <el-select v-model="baTable.form.items!.auth" class="m-2" placeholder="Select" @visible-change="visibleChange">
+            <el-form-item label="用户昵称" prop="nickname">
+                <el-input v-model="baTable.form.items!.nickname" />
+            </el-form-item>
+            <el-form-item label="用户密码" prop="password">
+                <el-input v-model="baTable.form.items!.password" />
+            </el-form-item>
+            <el-form-item label="用户权限" prop="auth">
+                <el-select v-model="baTable.form.items!.auth" label="auth_name" style="width: 100%" class="m-2" placeholder="选择权限" @visible-change="visibleChange">
                     <el-option v-for="item in state.options" :key="item.id" :label="item.name" :value="item.id" />
                 </el-select>
             </el-form-item>
@@ -26,9 +32,10 @@
 import { inject, onMounted, reactive, ref, watch } from "vue";
 
 import baTableClass from "@/utils/baTable";
-import { ElForm } from "element-plus";
+import { ElForm, FormRules } from "element-plus";
 import { baTableApi } from "@/api/common";
 import { Group } from "@/api/controllerUrl";
+import { buildValidatorData } from "@/utils/validate";
 
 const baTable = inject("baTable") as baTableClass;
 const state = reactive<{
@@ -39,8 +46,15 @@ const state = reactive<{
 const formRef = ref<InstanceType<typeof ElForm>>();
 
 const visibleChange = (val: boolean) => {
-    if (val) new baTableApi(Group).list(true).then(res => (state.options = res.data));
+    if (val) new baTableApi(Group).list({ isAll: 1 }).then(res => (state.options = res.data));
 };
+
+// 表单验证规则
+const rules = reactive<FormRules>({
+    username: [buildValidatorData({ name: "required", message: "请输入用户名" }), buildValidatorData({ name: "account" })],
+    nickname: [buildValidatorData({ name: "required", message: "请输入昵称" }), buildValidatorData({ name: "account" })],
+    auth: [buildValidatorData({ name: "required", message: "请选择用户权限" })],
+});
 
 defineExpose({
     options: state.options,

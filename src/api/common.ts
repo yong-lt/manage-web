@@ -49,24 +49,33 @@ export class baTableApi {
         this.actionUrl = new Map([
             ["list", controllerUrl + "list"],
             ["modify", controllerUrl + "modify"],
+            ["add", controllerUrl + "add"],
             ["info", controllerUrl + "info"],
             ["delete", controllerUrl + "delete"],
         ]);
     }
 
     // 列表查询
-    list<T = any>(h = false): ApiPromise<T> {
+    list<T = any>(params?: anyObj): ApiPromise<T> {
         return http({
             url: this.actionUrl.get("list"),
             method: "GET",
-            params: { h },
+            params,
         });
     }
 
-    // 数据新增修改
+    // 数据修改
     modify<T = any>(data: any): ApiPromise<T> {
         return http({
             url: this.actionUrl.get("modify"),
+            method: "POST",
+            data: data,
+        });
+    }
+    // 数据新增
+    add<T = any>(data: any): ApiPromise<T> {
+        return http({
+            url: this.actionUrl.get("add"),
             method: "POST",
             data: data,
         });

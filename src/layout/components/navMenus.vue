@@ -35,7 +35,7 @@
                     </div>
                 </div>
                 <div class="admin-info-footer">
-                    <el-button @click="router.push('/userinfo')" type="primary" plain>个人资料</el-button>
+                    <el-button @click="router.push('/userinfo/index')" type="primary" plain>个人资料</el-button>
                     <el-button @click="onLogout" type="danger" plain>注销</el-button>
                 </div>
             </div>
@@ -52,12 +52,9 @@
 import config from "../common/config.vue";
 import { useConfig } from "@/stores/config";
 import { useUserInfo } from "@/stores/user";
-import { Local } from "@/utils/storage";
 import { ElMessage } from "element-plus";
 import screenfull from "screenfull";
-import { USER_INFO } from "@/stores/constant/cacheKey";
 import { useRouter } from "vue-router";
-import { onMounted } from "vue";
 import { onLogout } from "@/utils/common";
 
 const configStore = useConfig();
@@ -73,13 +70,8 @@ const onFullScreen = () => {
 };
 
 const onGithub = () => {
-    window.open("https://github.com/");
+    window.open("https://github.com/yong-lt");
 };
-
-// const onLogout = () => {
-//     Local.remove(USER_INFO);
-//     router.replace("/login");
-// };
 </script>
 
 <style scoped lang="scss">

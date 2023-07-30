@@ -26,9 +26,22 @@ export function validatorPassword(rule: any, val: string, callback: Function) {
     return callback();
 }
 
+/**
+ * 菜单组件路径验证
+ */
+export function validatorMenuComponentPath(rule: any, val: string, callback: Function) {
+    if (!val) {
+        return callback();
+    }
+    if (!/^\/.*index$/.test(val)) {
+        return callback(new Error("需要以/开头，index结尾的组件路径"));
+    }
+    return callback();
+}
+
 export interface buildValidatorParams {
-    // 规则名:required=必填,mobile=手机号,account=账户,password=密码
-    name: "required" | "account" | "password";
+    // 规则名:required=必填,mobile=手机号,account=账户,password=密码,menuComponentPath=菜单组件路径
+    name: "required" | "account" | "password" | "menuComponentPath";
     // 自定义验证错误消息
     message?: string;
     // 验证触发方式
@@ -53,6 +66,7 @@ export function buildValidatorData({ name, message, trigger = "blur" }: buildVal
     const validatorCustomFun: anyObj = {
         account: validatorAccount,
         password: validatorPassword,
+        menuComponentPath: validatorMenuComponentPath,
     };
     if (validatorCustomFun[name]) {
         return {

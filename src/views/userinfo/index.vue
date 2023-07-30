@@ -1,57 +1,48 @@
 <template>
-    <div class="container">
-        <el-row :gutter="30">
-            <el-col :xs="24" :sm="24" :md="24" :lg="24">
-                <div class="user-info">
-                    <div v-show="!state.showModifyBox" class="base-info">
-                        <el-upload
-                            class="avatar-uploader"
-                            action=""
-                            :show-file-list="false"
-                            :auto-upload="false"
-                            @change="onAvatarBeforeUpload"
-                            accept="image/gif, image/jpg, image/jpeg, image/bmp, image/png, image/webp"
-                        >
-                            <el-image :src="userStore.getUserInfo.avatar_url" class="avatar">
-                                <template #error>
-                                    <div class="image-slot">
-                                        <Icon size="30" color="#c0c4cc" name="el-icon-Picture" />
-                                    </div>
-                                </template>
-                            </el-image>
-                        </el-upload>
-                        <div class="nickname">{{ userStore.getUserInfo.nickname }}</div>
-                        <div class="create-time">最后登录：{{ userStore.getUserInfo.last_login_time }}</div>
-                    </div>
-
-                    <div class="other-info">
-                        <el-form
-                            :model="state.form"
-                            :rules="rules"
-                            label-width="120px"
-                            label-position="top"
-                            ref="formRef"
-                            :key="state.formKey"
-                        >
-                            <el-form-item label="用户名">
-                                <el-input disabled v-model="state.form.username"></el-input>
-                            </el-form-item>
-                            <el-form-item label="用户昵称" prop="nickname">
-                                <el-input v-model="state.form.nickname"></el-input>
-                            </el-form-item>
-                            <el-form-item label="新密码" prop="password">
-                                <el-input v-model="state.form.password" placeholder="不修改则不填写"></el-input>
-                            </el-form-item>
-                            <el-form-item>
-                                <el-button type="primary" @click="onSubmit(formRef)" :loading="state.buttonLoading">保存修改</el-button>
-                                <el-button @click="onResetForm(formRef)">重置</el-button>
-                            </el-form-item>
-                        </el-form>
-                    </div>
+    <el-row :gutter="30">
+        <el-col :xs="24" :sm="24" :md="24" :lg="24">
+            <div class="user-info">
+                <div v-show="!state.showModifyBox" class="base-info">
+                    <el-upload
+                        class="avatar-uploader"
+                        action=""
+                        :show-file-list="false"
+                        :auto-upload="false"
+                        @change="onAvatarBeforeUpload"
+                        accept="image/gif, image/jpg, image/jpeg, image/bmp, image/png, image/webp"
+                    >
+                        <el-image :src="userStore.getUserInfo.avatar_url" class="avatar">
+                            <template #error>
+                                <div class="image-slot">
+                                    <Icon size="30" color="#c0c4cc" name="el-icon-Picture" />
+                                </div>
+                            </template>
+                        </el-image>
+                    </el-upload>
+                    <div class="nickname">{{ userStore.getUserInfo.nickname }}</div>
+                    <div class="create-time">最后登录：{{ userStore.getUserInfo.last_login_time }}</div>
                 </div>
-            </el-col>
-        </el-row>
-    </div>
+
+                <div class="other-info">
+                    <el-form :model="state.form" :rules="rules" label-width="120px" label-position="top" ref="formRef" :key="state.formKey">
+                        <el-form-item label="用户名">
+                            <el-input disabled v-model="state.form.username"></el-input>
+                        </el-form-item>
+                        <el-form-item label="用户昵称" prop="nickname">
+                            <el-input v-model="state.form.nickname"></el-input>
+                        </el-form-item>
+                        <el-form-item label="新密码" prop="password">
+                            <el-input v-model="state.form.password" placeholder="不修改则不填写"></el-input>
+                        </el-form-item>
+                        <el-form-item>
+                            <el-button type="primary" @click="onSubmit(formRef)" :loading="state.buttonLoading">保存修改</el-button>
+                            <el-button @click="onResetForm(formRef)">重置</el-button>
+                        </el-form-item>
+                    </el-form>
+                </div>
+            </div>
+        </el-col>
+    </el-row>
 </template>
 
 <script lang="ts" setup>
@@ -120,6 +111,7 @@ const onAvatarBeforeUpload = (file: any) => {
     fileUpload(fd, "image").then(() => {
         getUserInfo().then(info => {
             userStore.dataFill(info.data);
+            ElNotification.success({ title: "操作成功", message: "头像更新成功" });
         });
     });
 };

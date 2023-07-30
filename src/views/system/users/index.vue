@@ -30,26 +30,14 @@ const baTable = new baTableClass(
                 align: "left",
             },
             { label: "用户账号", prop: "username", width: "", align: "left" },
-            { label: "用户权限", prop: "auth", width: "", align: "left" },
-            { label: "创建时间", prop: "createdAt", width: "", align: "left" },
-            { label: "更新时间", prop: "updatedAt", width: "", align: "left" },
+            { label: "用户昵称", prop: "nickname", width: "", align: "left" },
+            { label: "用户权限", prop: "auth_name", width: "", align: "left" },
+            { label: "创建时间", prop: "create_time", width: "", align: "left" },
+            { label: "更新时间", prop: "update_time", width: "", align: "left" },
             { label: "操作", width: "130", align: "center", render: "buttons", buttons: defaultOptButtons() },
         ],
     },
-    {
-        onSubmit({ form, items }) {
-            console.log(formRef.value);
-
-            // baTable.api.modify({ ...items, menu: ids.join() }).then(res => {
-            //     if (res.code === 200) {
-            //         ElNotification.success({ message: res.msg });
-            //         baTable.form.operate = "";
-            //         baTable.getList();
-            //     }
-            // });
-            return false;
-        },
-    }
+    {}
 );
 provide("baTable", baTable);
 onMounted(() => {

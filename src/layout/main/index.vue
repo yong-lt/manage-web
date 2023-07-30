@@ -1,7 +1,9 @@
 <template>
     <el-main class="layout-main">
         <el-scrollbar class="layout-main-scrollbar" :style="mainHeight()">
-            <router-view></router-view>
+            <div class="container">
+                <router-view></router-view>
+            </div>
         </el-scrollbar>
     </el-main>
 </template>

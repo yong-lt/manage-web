@@ -3,9 +3,7 @@
 
     <!-- tag -->
     <div v-if="field.render == 'tag'">
-        <el-tag :type="getTagType(fieldValue, field.custom)" effect="dark" size="small">{{
-            field.custom && field.custom[fieldValue]["name"]
-        }}</el-tag>
+        <el-tag :type="getTagType(fieldValue, field.custom)" effect="dark" size="small">{{ field.custom && field.custom[fieldValue]["name"] }}</el-tag>
     </div>
 
     <!-- 按钮组 -->
@@ -53,14 +51,14 @@ const onButtonClick = (btn: OptButton) => {
 const getTagType = (value: string, custom: any) => (custom && custom[value]["type"] ? custom[value]["type"] : "");
 </script>
 
-<style>
+<style scoped lang="scss">
 .table-operate {
     padding: 4px 5px;
     height: auto;
 }
 .table-operate .icon {
     font-size: 14px !important;
-    /* color: var(--ba-bg-color-overlay) !important; */
+    color: var(--ylt-bg-color-overlay) !important;
 }
 .ml-6 {
     display: inline-flex;

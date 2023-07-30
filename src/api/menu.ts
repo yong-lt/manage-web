@@ -1,6 +1,6 @@
 import http from "@/utils/http";
-
-const controllerUrl = "/api/menu";
+import { baTableApi } from "./common";
+import { Menu } from "./controllerUrl";
 
 // export function menuListApi<T>(parent_id: number): ApiPromise<T> {
 //     return http({
@@ -10,28 +10,11 @@ const controllerUrl = "/api/menu";
 //     });
 // }
 
-export function getListApi<T>(): ApiPromise<T> {
-    return http({
-        url: controllerUrl + "/list",
-        method: "GET",
-    });
-}
+// export function getListApi<T>(): ApiPromise<T> {
+//     return http({
+//         url: controllerUrl + "/list",
+//         method: "GET",
+//     });
+// }
 
-export function deleteMenuApi(id: number): ApiPromise {
-    return http({
-        url: controllerUrl + "/delete",
-        data: { id },
-        method: "POST",
-    });
-}
-
-export function modifyMenuApi(data: object, parent_id = 0): ApiPromise {
-    return http({
-        url: controllerUrl + "/modify",
-        data: {
-            ...data,
-            parent_id,
-        },
-        method: "POST",
-    });
-}
+export const getListApi = (data?: anyObj) => new baTableApi(Menu).list(data);
