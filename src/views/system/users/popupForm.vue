@@ -1,5 +1,10 @@
 <template>
-    <el-dialog class="ba-operate-dialog" :close-on-click-modal="false" :model-value="baTable.form.operate ? true : false" @close="baTable.toggleForm">
+    <el-dialog
+        class="ba-operate-dialog"
+        :close-on-click-modal="false"
+        :model-value="baTable.form.operate ? true : false"
+        @close="baTable.toggleForm"
+    >
         <template #header>
             <div class="my-header">{{ baTable.form.title }}</div>
         </template>
@@ -14,7 +19,14 @@
                 <el-input v-model="baTable.form.items!.password" />
             </el-form-item>
             <el-form-item label="用户权限" prop="auth">
-                <el-select v-model="baTable.form.items!.auth" label="auth_name" style="width: 100%" class="m-2" placeholder="选择权限" @visible-change="visibleChange">
+                <el-select
+                    v-model="baTable.form.items!.auth"
+                    label="auth_name"
+                    style="width: 100%"
+                    class="m-2"
+                    placeholder="选择权限"
+                    @visible-change="visibleChange"
+                >
                     <el-option v-for="item in state.options" :key="item.id" :label="item.name" :value="item.id" />
                 </el-select>
             </el-form-item>
@@ -22,7 +34,9 @@
         <template #footer>
             <span class="dialog-footer">
                 <el-button @click="baTable.toggleForm">取消</el-button>
-                <el-button type="primary" @click="baTable.onSubmit(formRef)">确定</el-button>
+                <el-button type="primary" @click="baTable.onSubmit(formRef, ['id', 'username', 'nickname', 'password', 'auth'])">
+                    确定</el-button
+                >
             </span>
         </template>
     </el-dialog>
@@ -53,6 +67,7 @@ const visibleChange = (val: boolean) => {
 const rules = reactive<FormRules>({
     username: [buildValidatorData({ name: "required", message: "请输入用户名" }), buildValidatorData({ name: "account" })],
     nickname: [buildValidatorData({ name: "required", message: "请输入昵称" }), buildValidatorData({ name: "account" })],
+    password: [buildValidatorData({ name: "password" })],
     auth: [buildValidatorData({ name: "required", message: "请选择用户权限" })],
 });
 

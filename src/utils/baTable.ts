@@ -164,7 +164,7 @@ export default class baTable {
         this.api.delete(ids).then(() => this.getList());
     };
 
-    onSubmit(form: InstanceType<typeof ElForm> | undefined = undefined) {
+    onSubmit(form: InstanceType<typeof ElForm> | undefined = undefined, filedArr: string[]) {
         if (this.runBefore("onSubmit", { form, items: this.form.items }) === false) return;
 
         const submitCallback = () => {
@@ -174,6 +174,11 @@ export default class baTable {
                     this.toggleForm();
                 });
             } else {
+                for (const key in this.form.items) {
+                    if (!filedArr.includes(key)) {
+                        delete this.form.items[key];
+                    }
+                }
                 this.api.modify(this.form.items).then(() => {
                     this.onTableHeaderAction("refresh", {});
                     this.toggleForm();

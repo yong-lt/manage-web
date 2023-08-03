@@ -14,4 +14,4 @@ export function loginApi<T>(data: object): ApiPromise<T> {
 export const getUserInfo = (): ApiPromise<UserInfo> => new baTableApi(Users).info();
 
 // 用户信息修改
-export const modifyUserInfo = (data: { nickname: string; password: string }) => new baTableApi(Users).modify(data);
+export const modifyUserInfo = (data: { id: number; nickname: string; password: string }) => new baTableApi(Users).modify(data);

@@ -90,7 +90,7 @@ const onSubmit = (formEl: FormInstance | undefined) => {
         if (valid) {
             state.buttonLoading = true;
             const { nickname, password } = state.form;
-            modifyUserInfo({ nickname, password })
+            modifyUserInfo({ id: userStore.id, nickname, password })
                 .then(res => {
                     userStore.dataFill({ ...userStore.$state, nickname: state.form.nickname });
                     state.buttonLoading = false;
