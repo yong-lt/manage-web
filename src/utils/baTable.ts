@@ -164,7 +164,7 @@ export default class baTable {
         this.api.delete(ids).then(() => this.getList());
     };
 
-    onSubmit(form: InstanceType<typeof ElForm> | undefined = undefined, filedArr: string[]) {
+    onSubmit(form: InstanceType<typeof ElForm> | undefined = undefined, filedArr?: string[]) {
         if (this.runBefore("onSubmit", { form, items: this.form.items }) === false) return;
 
         const submitCallback = () => {
@@ -175,7 +175,7 @@ export default class baTable {
                 });
             } else {
                 for (const key in this.form.items) {
-                    if (!filedArr.includes(key)) {
+                    if (filedArr && !filedArr.includes(key)) {
                         delete this.form.items[key];
                     }
                 }
