@@ -35,7 +35,7 @@ export default class baTable {
     }
 
     // 检查是否有组件私有方法
-    runBefore(funName: string, args: any = {}) {
+    runBefore(funName: string, args: anyObj = {}) {
         if (this.before && this.before[funName] && typeof this.before[funName] === "function") {
             return this.before[funName]!({ ...args }) === false ? false : true;
         }
@@ -165,7 +165,7 @@ export default class baTable {
     };
 
     onSubmit(form: InstanceType<typeof ElForm> | undefined = undefined, filedArr?: string[]) {
-        if (this.runBefore("onSubmit", { form, items: this.form.items }) === false) return;
+        if (this.runBefore("onSubmit", { form, items: this.form.items, filedArr }) === false) return;
 
         const submitCallback = () => {
             if (!this.form.items?.id) {

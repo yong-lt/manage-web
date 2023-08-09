@@ -32,16 +32,74 @@ const baTable = new baTableClass(
         },
     },
     {
-        onSubmit({ form, items }) {
+        onSubmit({ form, items, filedArr }) {
             const ids = formRef.value.getCheckeds();
-            baTable.api.modify({ ...items, menu: ids.join() }).then(res => {
-                if (res.code === 200) {
-                    ElNotification.success({ message: res.msg });
-                    baTable.form.operate = "";
-                    baTable.getList();
+            const submitCallback = () => {
+                if (!items.id) {
+                    baTable.api.add({ ...items, menu: ids.join() }).then(() => {
+                        baTable.onTableHeaderAction("refresh", {});
+                        baTable.toggleForm();
+                    });
+                } else {
+                    for (const key in items) {
+                        if (filedArr && !filedArr.includes(key)) {
+                            delete items[key];
+                        }
+                    }
+                    baTable.api.modify({ ...items, menu: ids.join() }).then(() => {
+                        baTable.onTableHeaderAction("refresh", {});
+                        baTable.toggleForm();
+                    });
                 }
-            });
+            };
+
+            if (form) {
+                form.validate(valid => {
+                    if (valid) {
+                        submitCallback();
+                    }
+                });
+            }
+
             return false;
+
+            // const ids = formRef.value.getCheckeds();
+            // baTable.api.modify({ ...items, menu: ids.join() }).then(res => {
+            //     if (res.code === 200) {
+            //         ElNotification.success({ message: res.msg });
+            //         baTable.form.operate = "";
+            //         baTable.getList();
+            //     }
+            // });
+            // const submitCallback = () => {
+            //     if (!this.form.items?.id) {
+            //         this.api.add({ ...items, menu: ids.join() }).then(() => {
+            //             this.onTableHeaderAction("refresh", {});
+            //             this.toggleForm();
+            //         });
+            //     } else {
+            //         for (const key in this.form.items) {
+            //             if (filedArr && !filedArr.includes(key)) {
+            //                 delete this.form.items[key];
+            //             }
+            //         }
+            //         this.api.modify(this.form.items).then(() => {
+            //             this.onTableHeaderAction("refresh", {});
+            //             this.toggleForm();
+            //         });
+            //     }
+            // };
+            // if (form) {
+            //     this.form.ref = form;
+            //     form.validate(valid => {
+            //         if (valid) {
+            //             submitCallback();
+            //         }
+            //     });
+            // } else {
+            //     submitCallback();
+            // }
+            // return false;
         },
     }
 );

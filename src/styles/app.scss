@@ -30,3 +30,8 @@ html,body,#app{
     overflow: hidden;
     border-radius: var(--el-border-radius-base);
 }
+
+// select 显示保留空格
+.el-select-dropdown__item {
+    white-space: pre;
+}

@@ -47,21 +47,17 @@ import { inject, onMounted, reactive, ref, watch } from "vue";
 
 import baTableClass from "@/utils/baTable";
 import { ElForm, FormRules } from "element-plus";
-import { baTableApi } from "@/api/common";
-import { Group } from "@/api/controllerUrl";
+import { getFormatList } from "@/api/group";
 import { buildValidatorData } from "@/utils/validate";
+
+type Options = { id: number; name: string }[];
 
 const baTable = inject("baTable") as baTableClass;
 const state = reactive<{
-    options: { id: number; name: string }[];
+    options: Options;
 }>({
     options: [],
 });
-const formRef = ref<InstanceType<typeof ElForm>>();
-
-const visibleChange = (val: boolean) => {
-    if (val) new baTableApi(Group).list({ isAll: 1 }).then(res => (state.options = res.data));
-};
 
 // 表单验证规则
 const rules = reactive<FormRules>({
@@ -70,6 +66,26 @@ const rules = reactive<FormRules>({
     password: [buildValidatorData({ name: "password" })],
     auth: [buildValidatorData({ name: "required", message: "请选择用户权限" })],
 });
+
+const formRef = ref<InstanceType<typeof ElForm>>();
+
+const visibleChange = (val: boolean) => {
+    state.options = [];
+    if (val) getFormatList<Options>().then(res => (state.options = res.data));
+};
+
+// 下拉框赋值初始值
+watch(
+    () => baTable.form.items,
+    val => {
+        if (Object.keys(val!).length) {
+            state.options = [{ id: val!.auth, name: val!.auth_name }];
+        }
+    },
+    {
+        deep: true,
+    }
+);
 
 defineExpose({
     options: state.options,

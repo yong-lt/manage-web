@@ -34,7 +34,7 @@ declare global {
     }
 
     interface BaTableBefore {
-        onSubmit?: ({ form, items }: { form: InstanceType<typeof ElForm>; items: anyObj }) => boolean | void;
+        onSubmit?: ({ form, items, filedArr }: { form: InstanceType<typeof ElForm>; items: anyObj; filedArr?: anyObj }) => boolean | void;
         [key: string]: Function | undefined;
     }
 
