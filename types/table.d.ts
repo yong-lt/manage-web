@@ -34,7 +34,14 @@ declare global {
     }
 
     interface BaTableBefore {
+        // 表格数据提交前
         onSubmit?: ({ form, items, filedArr }: { form: InstanceType<typeof ElForm>; items: anyObj; filedArr?: anyObj }) => boolean | void;
+        [key: string]: Function | undefined;
+    }
+
+    interface BaTableAfter {
+        // 表格数据请求后
+        getIndex?: ({ res }: { res: ApiResponse }) => void;
         [key: string]: Function | undefined;
     }
 
@@ -47,6 +54,8 @@ declare global {
         type: ButtonType;
         icon: string;
         popconfirm?: Partial<Mutable<PopconfirmProps>>;
+        // 按钮是否显示，请返回布尔值
+        display?: (row: TableRow, field: TableColumn) => boolean;
     }
 
     type HeaderOptButton = "refresh" | "add" | "delete" | "unfold";

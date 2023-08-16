@@ -15,22 +15,24 @@ import baTableClass from "@/utils/baTable";
 import { baTableApi } from "@/api/common";
 import { Group } from "@/api/controllerUrl";
 import { defaultOptButtons } from "@/components/table";
+import { getArrayKey } from "@/utils/common";
+
 const tableRef = ref();
 const formRef = ref();
+
+const optButtons = defaultOptButtons(["edit", "delete"]);
+
 const baTable = new baTableClass(
     new baTableApi(Group),
     {
+        expandAll: true,
         column: [
             { type: "selection", align: "center" },
             { label: "角色名称", prop: "name", width: "", align: "left" },
-            { label: "操作", width: "130", align: "center", render: "buttons", buttons: defaultOptButtons() },
+            { label: "操作", width: "130", align: "center", render: "buttons", buttons: optButtons },
         ],
     },
-    {
-        defaultItem: {
-            parent_id: 0,
-        },
-    },
+    {},
     {
         onSubmit({ form, items, filedArr }) {
             const ids = formRef.value.getCheckeds();
@@ -62,44 +64,16 @@ const baTable = new baTableClass(
             }
 
             return false;
-
-            // const ids = formRef.value.getCheckeds();
-            // baTable.api.modify({ ...items, menu: ids.join() }).then(res => {
-            //     if (res.code === 200) {
-            //         ElNotification.success({ message: res.msg });
-            //         baTable.form.operate = "";
-            //         baTable.getList();
-            //     }
-            // });
-            // const submitCallback = () => {
-            //     if (!this.form.items?.id) {
-            //         this.api.add({ ...items, menu: ids.join() }).then(() => {
-            //             this.onTableHeaderAction("refresh", {});
-            //             this.toggleForm();
-            //         });
-            //     } else {
-            //         for (const key in this.form.items) {
-            //             if (filedArr && !filedArr.includes(key)) {
-            //                 delete this.form.items[key];
-            //             }
-            //         }
-            //         this.api.modify(this.form.items).then(() => {
-            //             this.onTableHeaderAction("refresh", {});
-            //             this.toggleForm();
-            //         });
-            //     }
-            // };
-            // if (form) {
-            //     this.form.ref = form;
-            //     form.validate(valid => {
-            //         if (valid) {
-            //             submitCallback();
-            //         }
-            //     });
-            // } else {
-            //     submitCallback();
-            // }
-            // return false;
+        },
+    },
+    {
+        getIndex: () => {
+            let buttonsKey = getArrayKey(baTable.table.column, "render", "buttons");
+            baTable.table.column![buttonsKey].buttons!.forEach((value: OptButton) => {
+                value.display = row => {
+                    return row.id != 1;
+                };
+            });
         },
     }
 );

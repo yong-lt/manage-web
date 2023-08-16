@@ -38,8 +38,7 @@ const baTable = new baTableClass(
     },
     {
         defaultItem: {
-            parent_id: 0,
-            type: "menu",
+            type: "menu_dir",
         },
     }
 );

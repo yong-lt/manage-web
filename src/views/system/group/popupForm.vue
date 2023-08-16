@@ -11,12 +11,7 @@
         </template>
         <el-form ref="formRef" :rules="rules" :model="baTable.form.items" label-width="120px" v-loading="baTable.form.loading">
             <el-form-item label="上级">
-                <el-select
-                    v-model="baTable.form.items!.parent_id"
-                    style="width: 100%"
-                    @visible-change="onGroupSelect"
-                    placeholder="无上级则不选"
-                >
+                <el-select v-model="baTable.form.items!.parent_id" style="width: 100%" placeholder="无上级则不选">
                     <el-option v-for="item in state.groupList" :key="item.id" :label="item.name" :value="item.id" />
                 </el-select>
             </el-form-item>
@@ -66,7 +61,6 @@ const baTable = inject("baTable") as baTableClass;
 
 const formRef = ref<InstanceType<typeof ElForm>>();
 const treeRef = ref<InstanceType<typeof ElTree>>();
-
 const state = reactive<{
     menuRules: Router;
     defaultKeys: number[];
@@ -82,6 +76,18 @@ const state = reactive<{
 // 表单验证规则
 const rules = reactive<FormRules>({
     name: [buildValidatorData({ name: "required", message: "请输入角色名称" })],
+    ids: [
+        {
+            required: true,
+            validator: (rule: any, val: string, callback: Function) => {
+                let ids = getCheckeds();
+                if (ids.length <= 0) {
+                    return callback(new Error("请选择权限"));
+                }
+                return callback();
+            },
+        },
+    ],
 });
 
 onMounted(() => {
@@ -102,23 +108,18 @@ watch(
 );
 
 watch(
-    () => baTable.form.items,
+    () => baTable.form.operate,
     val => {
-        if (val!.id) {
-            state.groupList = [{ id: val!.parent_id, name: val!.name }];
+        if (val) {
+            getFormatList<Options>().then(res => {
+                state.groupList = res.data;
+            });
         }
     },
     {
         deep: true,
     }
 );
-
-const onGroupSelect = (val: boolean) => {
-    state.groupList = [];
-    if (val) {
-        getFormatList<Options>().then(res => (state.groupList = res.data));
-    }
-};
 const getCheckeds = () => {
     return treeRef.value!.getCheckedKeys().concat(treeRef.value!.getHalfCheckedKeys());
 };

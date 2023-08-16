@@ -3,28 +3,32 @@
 
     <!-- tag -->
     <div v-if="field.render == 'tag'">
-        <el-tag :type="getTagType(fieldValue, field.custom)" effect="dark" size="small">{{ field.custom && field.custom[fieldValue]["name"] }}</el-tag>
+        <el-tag :type="getTagType(fieldValue, field.custom)" effect="dark" size="small">{{
+            field.custom && field.custom[fieldValue]["name"]
+        }}</el-tag>
     </div>
 
     <!-- 按钮组 -->
     <div v-if="field.render == 'buttons' && field.buttons">
         <template v-for="btn in field.buttons">
-            <el-tooltip v-if="btn.render == 'tipButton'" :content="btn.title" placement="top">
-                <el-button v-if="btn.name == 'edit'" :type="btn.type" size="small" class="table-operate" @click="onButtonClick(btn)">
-                    <Icon :name="btn.icon" />
-                </el-button>
-            </el-tooltip>
-            <el-popconfirm v-if="btn.render == 'confirmButton'" v-bind="btn.popconfirm" @confirm="onButtonClick(btn)">
-                <template #reference>
-                    <div class="ml-6">
-                        <el-tooltip :content="btn.title" placement="top">
-                            <el-button v-if="btn.name == 'delete'" class="table-operate" :type="btn.type">
-                                <Icon :name="btn.icon" />
-                            </el-button>
-                        </el-tooltip>
-                    </div>
-                </template>
-            </el-popconfirm>
+            <template v-if="btn.display ? btn.display(row, field) : true">
+                <el-tooltip v-if="btn.render == 'tipButton'" :content="btn.title" placement="top">
+                    <el-button v-if="btn.name == 'edit'" :type="btn.type" size="small" class="table-operate" @click="onButtonClick(btn)">
+                        <Icon :name="btn.icon" />
+                    </el-button>
+                </el-tooltip>
+                <el-popconfirm v-if="btn.render == 'confirmButton'" v-bind="btn.popconfirm" @confirm="onButtonClick(btn)">
+                    <template #reference>
+                        <div class="ml-6">
+                            <el-tooltip :content="btn.title" placement="top">
+                                <el-button v-if="btn.name == 'delete'" class="table-operate" :type="btn.type">
+                                    <Icon :name="btn.icon" />
+                                </el-button>
+                            </el-tooltip>
+                        </div>
+                    </template>
+                </el-popconfirm>
+            </template>
         </template>
     </div>
 </template>

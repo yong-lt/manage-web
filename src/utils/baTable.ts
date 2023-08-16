@@ -26,12 +26,14 @@ export default class baTable {
     });
 
     public before: BaTableBefore;
+    public after: BaTableAfter;
 
-    constructor(api: baTableApi, table: BaTable, form: BaTableForm, before: BaTableBefore = {}) {
+    constructor(api: baTableApi, table: BaTable, form: BaTableForm, before: BaTableBefore = {}, after: BaTableAfter = {}) {
         this.api = api;
         this.table = Object.assign(this.table, table);
         this.form = Object.assign(this.form, form);
         this.before = before;
+        this.after = after;
     }
 
     // 检查是否有组件私有方法
@@ -43,12 +45,24 @@ export default class baTable {
         return true;
     }
 
+    // 检查是否有组件私有方法
+    runAfter(funName: string, args: anyObj = {}) {
+        if (this.after && this.after[funName] && typeof this.after[funName] === "function") {
+            return this.after[funName]!({ ...args }) === false ? false : true;
+        }
+
+        return true;
+    }
+
     // 获取列表数据
     getList(data?: anyObj) {
         this.table.loading = true;
         this.api
             .list(data)
-            .then(res => (this.table.data = res.data))
+            .then(res => {
+                this.table.data = res.data;
+                this.runAfter("getIndex", { res });
+            })
             .finally(() => (this.table.loading = false));
     }
 
