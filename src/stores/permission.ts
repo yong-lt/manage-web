@@ -1,12 +1,11 @@
 import { defineStore } from "pinia";
-import { getListApi } from "@/api/menu";
+import { getAuthMenu } from "@/api/menu";
 import type { Permissions, Menu } from "./interface";
 import { addRouterItem, generaMenu } from "@/utils/router";
 
 export const usePermission = defineStore("permission", {
     state: (): Permissions => ({
         router: [],
-        isComplete: false,
     }),
     getters: {
         getRouter: state => state.router,
@@ -15,11 +14,11 @@ export const usePermission = defineStore("permission", {
         generateRoutes() {
             return new Promise(async (resolve, reject) => {
                 try {
-                    const res = await getListApi();
+                    const res = await getAuthMenu<Menu[]>();
                     const resultMenu: Menu[] = [];
                     generaMenu(resultMenu, res.data);
                     addRouterItem(resultMenu);
-                    this.$state = { ...this.$state, isComplete: true, router: resultMenu };
+                    this.$state = { router: resultMenu };
                     resolve(resultMenu);
                 } catch (error) {
                     reject(error);

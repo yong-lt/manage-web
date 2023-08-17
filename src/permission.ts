@@ -12,6 +12,8 @@ const whiteList = ["/login"];
 router.beforeEach(async (to, from, next) => {
     NProgress.start();
 
+    const permission = usePermission();
+
     const hasToken = Local.get(USER_INFO)?.token;
 
     if (hasToken) {
@@ -19,17 +21,16 @@ router.beforeEach(async (to, from, next) => {
             next({ path: "/" });
             NProgress.done();
         } else {
-            const permission = usePermission();
-            if (!permission.isComplete) {
+            if (permission.getRouter.length) {
+                next();
+            } else {
                 try {
-                    await usePermission().generateRoutes()
+                    await usePermission().generateRoutes();
                     next({ ...to, replace: true });
                 } catch (error) {
                     next({ path: "/login" });
                     NProgress.done();
                 }
-            } else {
-                next();
             }
         }
     } else {

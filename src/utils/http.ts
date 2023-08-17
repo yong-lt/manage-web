@@ -2,8 +2,6 @@ import axios from "axios";
 import { Local } from "./storage";
 import { USER_INFO } from "@/stores/constant/cacheKey";
 import { ElNotification } from "element-plus";
-import { useUserInfo } from "../stores/user";
-import { storeToRefs } from "pinia";
 import { onLogout } from "./common";
 
 const service = axios.create({
@@ -13,9 +11,9 @@ const service = axios.create({
 
 service.interceptors.request.use(
     config => {
-        const user = storeToRefs(useUserInfo());
-        if (user.token) {
-            config.headers["Token"] = Local.get(USER_INFO).token;
+        const token = Local.get(USER_INFO).token;
+        if (token) {
+            config.headers["Token"] = token;
         }
         return config;
     },

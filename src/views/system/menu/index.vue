@@ -45,7 +45,7 @@ const baTable = new baTableClass(
 provide("baTable", baTable);
 onMounted(() => {
     baTable.table.ref = tableRef.value;
-    baTable.mount({ isSystem: 1 });
+    baTable.mount();
 });
 </script>
 

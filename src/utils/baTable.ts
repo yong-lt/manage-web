@@ -55,10 +55,10 @@ export default class baTable {
     }
 
     // 获取列表数据
-    getList(data?: anyObj) {
+    getList() {
         this.table.loading = true;
         this.api
-            .list(data)
+            .list()
             .then(res => {
                 this.table.data = res.data;
                 this.runAfter("getIndex", { res });
@@ -105,7 +105,7 @@ export default class baTable {
                 () => {
                     this.table.data = [];
                     // 菜单，暂时这样传参数
-                    this.getList({ isSystem: 1 });
+                    this.getList();
                 },
             ],
             [
@@ -222,7 +222,7 @@ export default class baTable {
         return ids;
     }
     // 表单初始化请求数据
-    mount(data?: anyObj) {
-        this.getList(data);
+    mount() {
+        this.getList();
     }
 }

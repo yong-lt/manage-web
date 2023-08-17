@@ -4,6 +4,7 @@ import Icon from "@/components/icon/index.vue";
 import { ElForm } from "element-plus";
 import { useConfig } from "@/stores/config";
 import { useUserInfo } from "@/stores/user";
+import { usePermission } from "@/stores/permission";
 import { Local } from "./storage";
 import { USER_INFO } from "@/stores/constant/cacheKey";
 import router from "@/router";
@@ -85,6 +86,7 @@ export function mainHeight(): CSSProperties {
  */
 export function onLogout() {
     const userInfo = useUserInfo();
+    const permission = usePermission();
 
     if (userInfo.remember) {
         const saveFilds = ["username", "avatar_url", "remember"];
@@ -100,6 +102,9 @@ export function onLogout() {
         Local.remove(USER_INFO);
         userInfo.$reset();
     }
+
+    // 清空路由缓存
+    permission.$reset();
 
     router.replace("/login");
 }

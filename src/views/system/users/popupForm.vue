@@ -47,8 +47,9 @@ import { inject, onMounted, reactive, ref, watch } from "vue";
 
 import baTableClass from "@/utils/baTable";
 import { ElForm, FormRules } from "element-plus";
-import { getFormatList } from "@/api/group";
 import { buildValidatorData } from "@/utils/validate";
+import { baTableApi } from "@/api/common";
+import { Group } from "@/api/controllerUrl";
 
 type Options = { id: number; name: string }[];
 
@@ -71,7 +72,11 @@ const formRef = ref<InstanceType<typeof ElForm>>();
 
 const visibleChange = (val: boolean) => {
     state.options = [];
-    if (val) getFormatList<Options>().then(res => (state.options = res.data));
+    if (val) {
+        new baTableApi(Group).list({ isTree: 1 }).then(res => {
+            state.options = res.data;
+        });
+    }
 };
 
 // 下拉框赋值初始值

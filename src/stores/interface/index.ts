@@ -18,7 +18,6 @@ export type Menu = RouteRecordRaw & {
 
 export interface Permissions {
     router: Router;
-    isComplete: boolean;
 }
 
 export interface Layout {

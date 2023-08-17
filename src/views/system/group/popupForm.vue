@@ -10,7 +10,7 @@
             <div class="my-header">{{ baTable.form.title }}</div>
         </template>
         <el-form ref="formRef" :rules="rules" :model="baTable.form.items" label-width="120px" v-loading="baTable.form.loading">
-            <el-form-item label="上级">
+            <el-form-item prop="parent_id" label="上级">
                 <el-select v-model="baTable.form.items!.parent_id" style="width: 100%" placeholder="无上级则不选">
                     <el-option v-for="item in state.groupList" :key="item.id" :label="item.name" :value="item.id" />
                 </el-select>
@@ -46,9 +46,10 @@ import { inject, onMounted, reactive, ref, watch } from "vue";
 import baTableClass from "@/utils/baTable";
 import { ElForm, ElTree, FormRules } from "element-plus";
 import { Router } from "@/stores/interface";
-import { getListApi } from "@/api/menu";
 import { getFormatList } from "@/api/group";
 import { buildValidatorData } from "@/utils/validate";
+import { baTableApi } from "@/api/common";
+import { Menu } from "@/api/controllerUrl";
 
 type Options = { id: number; name: string }[];
 
@@ -88,10 +89,24 @@ const rules = reactive<FormRules>({
             },
         },
     ],
+    parent_id: [
+        {
+            validator: (rule: any, val: string, callback: Function) => {
+                if (!val) {
+                    return callback();
+                }
+                if (val == baTable.form.items!.id) {
+                    callback(new Error("上级不能选择自身"));
+                }
+                return callback();
+            },
+            trigger: "blur",
+        },
+    ],
 });
 
 onMounted(() => {
-    getListApi({ isSystem: 1 }).then(res => {
+    new baTableApi(Menu).list({ isTree: 1 }).then(res => {
         state.menuRules = res.data;
     });
 });
@@ -111,7 +126,7 @@ watch(
     () => baTable.form.operate,
     val => {
         if (val) {
-            getFormatList<Options>().then(res => {
+            baTable.api.list({ isTree: 1 }).then(res => {
                 state.groupList = res.data;
             });
         }
