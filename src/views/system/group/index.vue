@@ -69,8 +69,11 @@ const baTable = new baTableClass(
     {
         getIndex: () => {
             let buttonsKey = getArrayKey(baTable.table.column, "render", "buttons");
+
             baTable.table.column![buttonsKey].buttons!.forEach((value: OptButton) => {
                 value.display = row => {
+                    console.log(row);
+
                     return row.id != 1;
                 };
             });

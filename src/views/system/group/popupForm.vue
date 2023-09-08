@@ -46,7 +46,6 @@ import { inject, onMounted, reactive, ref, watch } from "vue";
 import baTableClass from "@/utils/baTable";
 import { ElForm, ElTree, FormRules } from "element-plus";
 import { Router } from "@/stores/interface";
-import { getFormatList } from "@/api/group";
 import { buildValidatorData } from "@/utils/validate";
 import { baTableApi } from "@/api/common";
 import { Menu } from "@/api/controllerUrl";

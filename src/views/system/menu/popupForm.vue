@@ -1,21 +1,11 @@
 <template>
-    <el-dialog
-        class="ba-operate-dialog"
-        :close-on-click-modal="false"
-        :model-value="baTable.form.operate ? true : false"
-        @close="baTable.toggleForm"
-    >
+    <el-dialog class="ba-operate-dialog" :close-on-click-modal="false" :model-value="baTable.form.operate ? true : false" @close="baTable.toggleForm">
         <template #header>
             <div class="my-header">{{ baTable.form.title }}</div>
         </template>
         <el-form ref="formRef" :rules="rules" :model="baTable.form.items" label-width="120px" v-loading="baTable.form.loading">
             <el-form-item label="上级菜单">
-                <el-select
-                    v-model="baTable.form.items!.parent_id"
-                    style="width: 100%"
-                    @visible-change="onMenuSelect"
-                    placeholder="无上级则不选"
-                >
+                <el-select v-model="baTable.form.items!.parent_id" style="width: 100%" @visible-change="onMenuSelect" placeholder="无上级则不选">
                     <el-option v-for="item in state.menuTree" :key="item.id" :label="item.title" :value="item.id" />
                 </el-select>
             </el-form-item>
@@ -41,7 +31,9 @@
         <template #footer>
             <span class="dialog-footer">
                 <el-button @click="baTable.toggleForm">取消</el-button>
-                <el-button type="primary" @click="baTable.onSubmit(formRef)">确定</el-button>
+                <el-button type="primary" @click="baTable.onSubmit(formRef, ['id', 'title', 'icon', 'sort', 'component', 'parent_id', 'type'])"
+                    >确定</el-button
+                >
             </span>
         </template>
     </el-dialog>
